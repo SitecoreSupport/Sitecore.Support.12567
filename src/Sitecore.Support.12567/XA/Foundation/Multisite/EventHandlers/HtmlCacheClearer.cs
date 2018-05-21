@@ -16,6 +16,7 @@
   using Sitecore.Sites;
   using Sitecore.Web;
   using Sitecore.XA.Foundation.Multisite;
+  using Sitecore.XA.Foundation.Multisite.Extensions;
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -39,17 +40,23 @@
       if (sitecoreEventArgs != null)
       {
         Publisher publisher = sitecoreEventArgs.Parameters[0] as Publisher;
-        if (publisher != null && publisher.Options.RootItem != null)
+        #region Modified code
+        if (publisher != null)
         {
-          List<SiteInfo> usages = GetUsages(publisher.Options.RootItem);
-          if (usages.Count > 0)
+          if (publisher.Options.RootItem != null)
           {
-            usages.ForEach(ClearSiteCache);
-            return;
+            List<SiteInfo> sitesToClear = GetUsages(publisher.Options.RootItem);
+            if (sitesToClear.Count > 0)
+            {
+              sitesToClear.ForEach(ClearSiteCache);
+              return;
+            }
           }
         }
       }
       base.ClearCache(sender, args);
+      ClearAllSxaSitesCaches();
+      #endregion
     }
 
     public new void OnPublishEndRemote(object sender, EventArgs args)
@@ -57,22 +64,43 @@
       Assert.ArgumentNotNull(sender, "sender");
       Assert.ArgumentNotNull(args, "args");
       PublishEndRemoteEventArgs publishEndRemoteEventArgs = args as PublishEndRemoteEventArgs;
+      #region Modified code
       if (publishEndRemoteEventArgs != null)
       {
-        Item item = Factory.GetDatabase(publishEndRemoteEventArgs.SourceDatabaseName, false)?.GetItem(new ID(publishEndRemoteEventArgs.RootItemId));
-        if (item != null)
+        Database database = Factory.GetDatabase(publishEndRemoteEventArgs.TargetDatabaseName, false);
+        Item rootItem = database?.GetItem(new ID(publishEndRemoteEventArgs.RootItemId));
+        if (rootItem != null)
         {
-          List<SiteInfo> usages = GetUsages(item);
-          if (usages.Count > 0)
+          List<SiteInfo> sitesToClear = GetUsages(rootItem);
+          if (sitesToClear.Count > 0)
           {
-            usages.ForEach(ClearSiteCache);
+            sitesToClear.ForEach(ClearSiteCache);
             return;
           }
         }
       }
       base.ClearCache(sender, args);
+      ClearAllSxaSitesCaches();
+      #endregion
+    }
+    #region Added code
+    protected virtual void ClearAllSxaSitesCaches()
+    {
+      foreach (Site item in from site in SiteManager.GetSites()
+                            where site.IsSxaSite()
+                            select site)
+      {
+        ClearSiteCache(item.Name);
+      }
     }
 
+    private void ClearSiteCache(string siteName)
+    {
+      Log.Info(String.Format("HtmlCacheClearer clearing cache for {0} site", siteName), this);
+      ProcessSite(siteName);
+      Log.Info("HtmlCacheClearer done.", this);
+    }
+    #endregion
     private void ClearSiteCache(SiteInfo site)
     {
       Log.Info($"HtmlCacheClearer clearing cache for {site.Name} site", this);
