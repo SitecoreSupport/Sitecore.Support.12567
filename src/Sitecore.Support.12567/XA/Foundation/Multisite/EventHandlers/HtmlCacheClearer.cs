@@ -3,6 +3,7 @@
   using Sitecore;
   using Sitecore.Caching;
   using Sitecore.Configuration;
+  using Sitecore.ContentSearch.Utilities;
   using Sitecore.Data;
   using Sitecore.Data.Events;
   using Sitecore.Data.Items;
@@ -48,20 +49,25 @@
               return;
             }
           }
-          else
-          {
-            foreach (Site item in from site in SiteManager.GetSites()
-                                  where site.IsSxaSite()
-                                  select site)
-            {
-              ClearSiteCache(item.Name);
-            }
-          }
+          #region Removed code
+          //else
+          //{
+          //  foreach (Site item in from site in SiteManager.GetSites()
+          //                        where site.IsSxaSite()
+          //                        select site)
+          //  {
+          //    ClearSiteCache(item.Name);
+          //  }
+          //}
+          #endregion
         }
-      }
-      ClearCache(sender, args);
-    }
 
+      }
+      base.ClearCache(sender, args);
+      #region Added code
+      ClearAllSxaSitesCaches();
+      #endregion
+    }
     public new void OnPublishEndRemote(object sender, EventArgs args)
     {
       Assert.ArgumentNotNull(sender, "sender");
@@ -81,6 +87,13 @@
         }
       }
       ClearCache(sender, args);
+      #region Added code
+      ClearAllSxaSitesCaches();
+      #endregion
+    }
+    protected virtual void ClearAllSxaSitesCaches()
+    {
+      SiteManager.GetSites().Where(site => site.IsSxaSite()).Select(site => site.Name).ForEach(ClearSiteCache);
     }
 
     private void ClearSiteCache(string siteName)
