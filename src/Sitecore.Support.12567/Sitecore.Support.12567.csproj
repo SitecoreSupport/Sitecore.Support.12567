@@ -42,24 +42,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\SC.Microsoft.Extensions.DependencyInjection.Abstractions.9.0.1\lib\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.ContentSearch">
+    <Reference Include="Sitecore.ContentSearch, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SC.Sitecore.ContentSearch.9.0.1\lib\Sitecore.ContentSearch.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.Kernel">
+    <Reference Include="Sitecore.Kernel, Version=11.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SC.Sitecore.Kernel.9.0.1\lib\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.XA.Foundation.Common">
-      <HintPath>..\packages\SXA90.Sitecore.XA.Foundation.Common.1.6.0\lib\Sitecore.XA.Foundation.Common.dll</HintPath>
+    <Reference Include="Sitecore.XA.Foundation.Common, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SXA90.Sitecore.XA.Foundation.Common.1.7.0\lib\Sitecore.XA.Foundation.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.XA.Foundation.Multisite, Version=3.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SXA90.Sitecore.XA.Foundation.Multisite.1.6.0\lib\Sitecore.XA.Foundation.Multisite.dll</HintPath>
+    <Reference Include="Sitecore.XA.Foundation.Multisite, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SXA90.Sitecore.XA.Foundation.Multisite.1.7.0\lib\Sitecore.XA.Foundation.Multisite.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
